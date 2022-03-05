@@ -30,7 +30,7 @@ class gameTile{
 // Canvas Design
 const BOARD_BORDER = 'black';
 const BOARD_BACKGROUND = 'white';
-
+const TILE_SIZE = 100;
 
 
 
@@ -39,16 +39,16 @@ const BOARD = document.getElementById("gridCanvas");
 const BOARD_CONTEXT = BOARD.getContext("2d");
 
 let changing_direction = false;
-let box1 = new gameTile(200, 200, 'lightblue'); //Test Box
+let box1 = new gameTile(0, 0, 'lightblue'); //Test Box
 
 function drawBox(boxCoordinates, colour){
   BOARD_CONTEXT.fillStyle = colour;
-  BOARD_CONTEXT.fillRect(boxCoordinates[0], boxCoordinates[1], 10, 10);
+  BOARD_CONTEXT.fillRect(boxCoordinates[0], boxCoordinates[1], TILE_SIZE, TILE_SIZE);
 }
 
 function clearGridTile(coordinates){
   BOARD_CONTEXT.fillStyle = BOARD_BACKGROUND;
-  BOARD_CONTEXT.fillRect(coordinates[0], coordinates[1], 10, 10);
+  BOARD_CONTEXT.fillRect(coordinates[0], coordinates[1], TILE_SIZE, TILE_SIZE);
 
 
 }
@@ -91,25 +91,25 @@ function movement(event){
 function moveLeft(box){
 
   clearGridTile(box.getCurrentPosition());
-  box.setCurrentPosition(box.getCurrentPosition()[0] - 10, box.getCurrentPosition()[1]);
+  box.setCurrentPosition(box.getCurrentPosition()[0] - TILE_SIZE, box.getCurrentPosition()[1]);
   drawBox(box.getCurrentPosition(), box.getColour());
 }
 
 function moveRight(box){
   clearGridTile(box.getCurrentPosition());
-  box.setCurrentPosition(box.getCurrentPosition()[0] + 10, box.getCurrentPosition()[1]);
+  box.setCurrentPosition(box.getCurrentPosition()[0] + TILE_SIZE, box.getCurrentPosition()[1]);
   drawBox(box.getCurrentPosition(), box.getColour());
 }
 
 function moveUp(box){
   clearGridTile(box.getCurrentPosition());
-  box.setCurrentPosition(box.getCurrentPosition()[0], box.getCurrentPosition()[1]- 10);
+  box.setCurrentPosition(box.getCurrentPosition()[0], box.getCurrentPosition()[1]- TILE_SIZE);
   drawBox(box.getCurrentPosition(), box.getColour());
 }
 
 function moveDown(box){
   clearGridTile(box.getCurrentPosition());
-  box.setCurrentPosition(box.getCurrentPosition()[0], box.getCurrentPosition()[1]+ 10);
+  box.setCurrentPosition(box.getCurrentPosition()[0], box.getCurrentPosition()[1]+ TILE_SIZE);
   drawBox(box.getCurrentPosition(), box.getColour());
 }
 
