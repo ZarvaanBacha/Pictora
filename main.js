@@ -17,11 +17,19 @@ class gameTile{
     setCurrentPosition(x,y){
       this.currentX = x;
       this.currentY = y;
-    }
+      }
 
     
     getColour(){
         return this.colour;
+      }
+
+    move(x,y){
+        // Checks if proposed tile movement is valid and sets the tile
+        if ((x >= 0 && x <= 500) && (y >= 0 && y <= 500))
+        {
+          this.setCurrentPosition(x,y);
+        }
       }
 }
 
@@ -44,7 +52,8 @@ let box1 = new gameTile(0, 0, 'lightblue'); //Test Box
 function drawBox(boxCoordinates, colour){
   BOARD_CONTEXT.fillStyle = colour;
   BOARD_CONTEXT.fillRect(boxCoordinates[0], boxCoordinates[1], TILE_SIZE, TILE_SIZE);
-  BOARD_CONTEXT.strokeRect(boxCoordinates[0], boxCoordinates[1], TILE_SIZE, TILE_SIZE);
+  //BOARD_CONTEXT.strokeRect(boxCoordinates[0], boxCoordinates[1], TILE_SIZE, TILE_SIZE);
+  drawGrid();
 }
 
 function clearGridTile(coordinates){
@@ -60,6 +69,35 @@ function clearBoard(){
   
   BOARD_CONTEXT.fillRect(0, 0, BOARD.width, BOARD.height);
   BOARD_CONTEXT.strokeRect(0, 0, BOARD.width, BOARD.height);
+}
+
+function drawGrid()
+{
+  // Draw Vertical Lines
+  for (let x = 0; x < 600; x+=100)
+  {
+    for (let y = 0; y < 600; y+=100)
+    {
+      BOARD_CONTEXT.beginPath();
+      BOARD_CONTEXT.moveTo(x,y);
+      BOARD_CONTEXT.lineTo(x,600);
+      BOARD_CONTEXT.stroke();
+    }
+  }
+
+  // Draw Horizontal Lines
+  for (let y = 0; y < 600; y+=100)
+  {
+    for (let x = 0; x < 600; x+=100)
+    {
+      BOARD_CONTEXT.beginPath();
+      BOARD_CONTEXT.moveTo(x,y);
+      BOARD_CONTEXT.lineTo(600,y);
+      BOARD_CONTEXT.stroke();
+    }
+  }
+  
+  
 }
 
 function movement(event){
@@ -88,30 +126,32 @@ function movement(event){
     //Moving Down
     moveDown(box1);
   }
+
+  console.log(box1.getCurrentPosition());
 }
 
 function moveLeft(box){
 
   clearGridTile(box.getCurrentPosition());
-  box.setCurrentPosition(box.getCurrentPosition()[0] - TILE_SIZE, box.getCurrentPosition()[1]);
+  box.move(box.getCurrentPosition()[0] - TILE_SIZE, box.getCurrentPosition()[1]);
   drawBox(box.getCurrentPosition(), box.getColour());
 }
 
 function moveRight(box){
   clearGridTile(box.getCurrentPosition());
-  box.setCurrentPosition(box.getCurrentPosition()[0] + TILE_SIZE, box.getCurrentPosition()[1]);
+  box.move(box.getCurrentPosition()[0] + TILE_SIZE, box.getCurrentPosition()[1]);
   drawBox(box.getCurrentPosition(), box.getColour());
 }
 
 function moveUp(box){
   clearGridTile(box.getCurrentPosition());
-  box.setCurrentPosition(box.getCurrentPosition()[0], box.getCurrentPosition()[1]- TILE_SIZE);
+  box.move(box.getCurrentPosition()[0], box.getCurrentPosition()[1]- TILE_SIZE);
   drawBox(box.getCurrentPosition(), box.getColour());
 }
 
 function moveDown(box){
   clearGridTile(box.getCurrentPosition());
-  box.setCurrentPosition(box.getCurrentPosition()[0], box.getCurrentPosition()[1]+ TILE_SIZE);
+  box.move(box.getCurrentPosition()[0], box.getCurrentPosition()[1]+ TILE_SIZE);
   drawBox(box.getCurrentPosition(), box.getColour());
 }
 
@@ -120,6 +160,7 @@ function moveDown(box){
 function main()
 {
   clearBoard();
+  drawGrid();
   console.log(box1.getCurrentPosition());
   drawBox(box1.getCurrentPosition(), box1.getColour());
 }
