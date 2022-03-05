@@ -44,11 +44,13 @@ let box1 = new gameTile(0, 0, 'lightblue'); //Test Box
 function drawBox(boxCoordinates, colour){
   BOARD_CONTEXT.fillStyle = colour;
   BOARD_CONTEXT.fillRect(boxCoordinates[0], boxCoordinates[1], TILE_SIZE, TILE_SIZE);
+  BOARD_CONTEXT.strokeRect(boxCoordinates[0], boxCoordinates[1], TILE_SIZE, TILE_SIZE);
 }
 
 function clearGridTile(coordinates){
   BOARD_CONTEXT.fillStyle = BOARD_BACKGROUND;
   BOARD_CONTEXT.fillRect(coordinates[0], coordinates[1], TILE_SIZE, TILE_SIZE);
+  BOARD_CONTEXT.strokeRect(0, 0, BOARD.width, BOARD.height);
 
 
 }
