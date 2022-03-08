@@ -24,12 +24,36 @@ class gameTile{
         return this.colour;
       }
 
-    move(x,y){
+    
+    directionCalc(x,y, direction){
+        // Calculates the coordinates of the tiles based on their proposed direction
+        switch (direction)
+        {
+          case "up":
+            y = y - 100;
+            break;
+          
+          case "down":
+            y = y + 100;
+            break;
+
+          case "left":
+            x = x - 100;
+          
+          case "right":
+            x = x + 100;
+        }
+
+        return [x,y];
+    }
+      move(x,y){
         // Checks if proposed tile movement is valid and sets the tile
         if ((x >= 0 && x <= 500) && (y >= 0 && y <= 500))
         {
           this.setCurrentPosition(x,y);
+          return true;
         }
+        return false;
       }
 }
 
@@ -46,8 +70,10 @@ const TILE_SIZE = 100;
 const BOARD = document.getElementById("gridCanvas");
 const BOARD_CONTEXT = BOARD.getContext("2d");
 
+// List to store tiles
+var Tiles = [];
 let changing_direction = false;
-let box1 = new gameTile(0, 0, 'lightblue'); //Test Box
+//let box1 = new gameTile(0, 0, 'lightblue'); //Test Box
 
 function drawBox(boxCoordinates, colour){
   BOARD_CONTEXT.fillStyle = colour;
@@ -55,6 +81,34 @@ function drawBox(boxCoordinates, colour){
   //BOARD_CONTEXT.strokeRect(boxCoordinates[0], boxCoordinates[1], TILE_SIZE, TILE_SIZE);
   drawGrid();
 }
+
+function spawnTiles(Tiles)
+{
+  for (tile of Tiles)
+  {
+    drawBox(tile.getCurrentPosition(), tile.getColour());
+  }
+}
+
+
+function generateTiles(){
+  for (let x = 0; x < 400; x += 100){
+    for (let y = 0; y < 400; y += 100){
+      Tiles.push(new gameTile(x,y,getRandomColor()));
+    }
+  }
+}
+
+function getRandomColor() {
+  var letters = '0123456789ABCDEF';
+  var color = '#';
+  for (var i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}
+
+
 
 function clearGridTile(coordinates){
   BOARD_CONTEXT.fillStyle = BOARD_BACKGROUND;
@@ -110,21 +164,21 @@ function movement(event){
 
   if (keyPressed === LEFT_ARROW){
     // Moving Left
-    moveLeft(box1);
+    moveLeft(Tiles);
   }
   
   if (keyPressed === RIGHT_ARROW){
-    moveRight(box1);
+    moveRight(Tiles);
   }
 
   if (keyPressed === UP_KEY){
     // Moving Up
-    moveUp(box1);
+    moveUp(Tiles);
   }
 
   if (keyPressed === DOWN_KEY){
     //Moving Down
-    moveDown(box1);
+    moveDown(Tiles);
   }
 
   console.log(box1.getCurrentPosition());
@@ -138,9 +192,19 @@ function moveLeft(box){
 }
 
 function moveRight(box){
-  clearGridTile(box.getCurrentPosition());
+
+  /*clearGridTile(box.getCurrentPosition());
   box.move(box.getCurrentPosition()[0] + TILE_SIZE, box.getCurrentPosition()[1]);
-  drawBox(box.getCurrentPosition(), box.getColour());
+  drawBox(box.getCurrentPosition(), box.getColour());*/
+
+  for (tile of Tiles)
+  {
+    //drawBox(tile.getCurrentPosition(), tile.getColour());
+    clearGridTile(tile.getCurrentPosition());
+    tile.move(tile.getCurrentPosition()[0] + TILE_SIZE, tile.getCurrentPosition()[1]);
+    drawBox(tile.getCurrentPosition(), tile.getColour());
+  }
+
 }
 
 function moveUp(box){
@@ -161,8 +225,10 @@ function main()
 {
   clearBoard();
   drawGrid();
-  console.log(box1.getCurrentPosition());
-  drawBox(box1.getCurrentPosition(), box1.getColour());
+  generateTiles();
+  spawnTiles(Tiles);
+  //console.log(box1.getCurrentPosition());
+  //drawBox(box1.getCurrentPosition(), box1.getColour());
 }
 
 main();
