@@ -253,11 +253,14 @@ function getRandomColor() {
 
 function checkWin()
 {
-  for (var tile of Tiles)
+  for (var row of Tiles)
   {
-    if (!tile.checkAtWin())
+    for (var tile of row)
     {
-      return false
+      if (!tile.checkAtWin())
+      {
+        return false
+      }
     }
   }
   alert("Congratulations, you won!!!!");
