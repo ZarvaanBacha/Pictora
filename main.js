@@ -2,31 +2,31 @@
 class gameTile{
   constructor(startingX, startingY, colour, text){
     // Store the starting coordinates of the box
-    this.startingX = startingX;
-    this.startingY = startingY;
-    this.colour = colour;
-    this.text = text;
+    this._startingX = startingX;
+    this._startingY = startingY;
+    this._colour = colour;
+    this._text = text;
 
     // Store the current position of the tile
-    this.currentX = startingX;
-    this.currentY = startingY;
+    this._currentX = startingX;
+    this._currentY = startingY;
   }
-    getCurrentPosition(){
-        return [this.currentX, this.currentY];
+    get CurrentPosition(){
+        return [this._currentX, this._currentY];
       }
     
-    setCurrentPosition(x,y){
-      this.currentX = x;
-      this.currentY = y;
+    set CurrentPosition(coordinates){
+      this._currentX = coordinates[0];
+      this._currentY = coordinates[1];
       }
 
     
-    getColour(){
-        return this.colour;
+    get Colour(){
+        return this._colour;
       }
     
-    getText(){
-      return this.text;
+    get Text(){
+      return this._text;
     }
 
     
@@ -100,13 +100,13 @@ function spawnTiles(Tiles)
 {
   for (tile of Tiles)
   {
-    drawBox(tile.getCurrentPosition(), tile.getColour(), tile.getText());
+    drawBox(tile.CurrentPosition, tile.Colour, tile.Text);
   }
 }
 
 
 function generateTiles(){
-  count = 1;
+  count = 01;
   for (let y = 0; y < 400; y += 100){
     for (let x = 0; x < 400; x += 100){
       Tiles.push(new gameTile(x,y,getRandomColor(), count.toString()));
@@ -124,7 +124,7 @@ function checkTiles(coordinates)
   // Checks if coordinates are equal to any other tile's current coordinates
   for (tile of Tiles)
   {
-    if (arrayEquals(coordinates, tile.getCurrentPosition()))
+    if (arrayEquals(coordinates, tile.CurrentPosition))
     {
       return false;
     }
@@ -224,14 +224,10 @@ function movement(event){
     moveDown(Tiles);
   }
 
-  console.log(box1.getCurrentPosition());
+  //console.log(box1.getCurrentPosition());
 }
 
 function moveLeft(box){
-
-  clearGridTile(box.getCurrentPosition());
-  box.move(box.getCurrentPosition()[0] - TILE_SIZE, box.getCurrentPosition()[1]);
-  drawBox(box.getCurrentPosition(), box.getColour());
 }
 
 function moveRight(box){
@@ -251,65 +247,55 @@ function moveRight(box){
 
   }
 
-  console.log('Split tiles', SplitTiles);
-
   /*
     Iterate through the divided lists
     Starting with the last object, loop till the last possible valid location
     Once the location has been determined, draw the tile in that spot
 
   */
+  storeTiles = []
   for (split of SplitTiles)
   {
     // Store copy of row 
-    row = [...split];
+    var row = [...split];
     // Reverse row for convinence
     row.reverse();
-    //console.log('Orignal Row', split);
-    console.log('Reverse Row', row);
-    for (tile of row)
+
+    for (let tile = 0; tile < row.length; tile+=1)
     {
-      console.log('Processing Tile', tile);
-      currentCoordinates = [tile.getCurrentPosition()[0], tile.getCurrentPosition()[1]];
-      console.log('Current Coordinates', currentCoordinates);
-      proposedCoordinates = [...currentCoordinates];
-      setCoordinates = [];
-      while (true)
-      {
-        // Caculate tile coordinates and set to propsed coordinates
-        proposedCoordinates = [...tile.directionCalc(proposedCoordinates[0], proposedCoordinates[1], 'right')];
-        console.log('Tile', tile.getText(), 'Proposed Coordinates', proposedCoordinates);
-        // Check if proposed coordinates either match existing tile or is invalid in board space
-        //console.log('Check Tiles', checkTiles(proposedCoordinates));
-        //console.log('isValid', tile.isValid(proposedCoordinates[0], proposedCoordinates[1]));
-        if (checkTiles(proposedCoordinates) == false || tile.isValid(proposedCoordinates[0], proposedCoordinates[1]) == false)
+      var currentCoordinates = [...row[tile].CurrentPosition]; // Copy tile's current postion
+      
+      var proposedCoordinates = [currentCoordinates[0], currentCoordinates[1]]; //Proposed coordinates, which will iterate from there on
+      flag = true;
+      while (flag)
+      { 
+        // Calculate tile coordinates and set to proposed coordinates
+        x = row[tile].directionCalc(proposedCoordinates[0], proposedCoordinates[1], 'right')[0];
+        y = row[tile].directionCalc(proposedCoordinates[0], proposedCoordinates[1], 'right')[1];
+        proposedCoordinates = [x,y];
+
+        // Check if propsed coordinates fails any of the two conditions
+        // If it does break out of the while loop
+
+        if (!checkTiles(proposedCoordinates) || !row[tile].isValid(proposedCoordinates[0], proposedCoordinates[1]))
         {
-            // Tile is in invalid location, set the coordinates to previous grid location by one
-            //setCoordinates[0] = proposedCoordinates[0] - 100;
-            //setCoordinates[1] = proposedCoordinates[1];
-            break;
-        } 
+          // Tile is in an invalid location, set the coordinates to one previous iteration
+          // Set Tile Location 
+          x = proposedCoordinates[0] - 100;
+          y = proposedCoordinates[1];
+          newCoorinates = [x,y];
+          row[tile].CurrentPosition = newCoorinates;
+          storeTiles.push(row[tile]);
+          flag = false;
+        }
       }
-      // Clear Tile 
-      // Set Tile Location 
-      // Draw the tile
-      //console.log('Tile', tile.getText(), 'Set Coordinates', setCoordinates);
-      //clearGridTile(currentCoordinates);
-      //tile.setCurrentPosition(setCoordinates[0], setCoordinates[1]);
-      //drawBox(tile.getCurrentPosition(), tile.getColour(), tile.getText());
-
     }
+    
   }
-
-
-
-  /*for (tile of Tiles)
-  {
-    //drawBox(tile.getCurrentPosition(), tile.getColour());
-    clearGridTile(tile.getCurrentPosition());
-    tile.move(tile.getCurrentPosition()[0] + TILE_SIZE, tile.getCurrentPosition()[1]);
-    drawBox(tile.getCurrentPosition(), tile.getColour());
-  }*/
+  Tiles = [...storeTiles.sort((a,b)=> (a.Text > b.Text ? 1 : -1))];
+  console.log(Tiles);
+  clearBoard();
+  spawnTiles(Tiles);
 
 }
 
