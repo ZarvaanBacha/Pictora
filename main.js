@@ -100,7 +100,7 @@ function drawBox(boxCoordinates, colour, text){
 
 function spawnTiles(Tiles)
 {
-  for (tile of Tiles)
+  for (let tile of Tiles)
   {
     drawBox(tile.CurrentPosition, tile.Colour, tile.Text);
   }
@@ -108,16 +108,16 @@ function spawnTiles(Tiles)
 
 function randomizeTiles()
 {
-  tileCopy = [...Tiles]
-  randomizedSet = [];
-  locations = [];
-  for (tile of tileCopy)
+  var tileCopy = [...Tiles];
+  var randomizedSet = [];
+  var locations = [];
+  for (var tile of tileCopy)
   {
-    flag = true;
+    var flag = true;
     while (flag)
     {
        // Create Random set of coordinates
-       proposedSet = [];
+       var proposedSet = [];
        proposedSet = [Math.floor(Math.random()*6)*100, Math.floor(Math.random()*6)*100];
        if (!locations.includes(proposedSet))
        {
@@ -135,7 +135,7 @@ function randomizeTiles()
 }
 
 function generateTiles(){
-  count = 1;
+  var count = 1;
   for (let y = 0; y < 400; y += 100){
     for (let x = 0; x < 400; x += 100){
       Tiles.push(new gameTile(x,y,getRandomColor(), count.toString()));
