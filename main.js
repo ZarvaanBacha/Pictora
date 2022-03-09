@@ -11,6 +11,13 @@ class gameTile{
     // Store the current position of the tile
     this._currentX = startingX;
     this._currentY = startingY;
+
+    var topLeftWin = [this._startingX, this._startingY];
+    var topRightWin = [this._startingX + 200, this._startingY];
+    var bottomLeftWin = [this._startingX, this._startingY + 200];
+    var bottomRightWin = [this._startingX + 200, this._startingX + 200];
+
+    var winLocations = [topLeftWin, topRightWin, bottomLeftWin, bottomRightWin];
   }
     get CurrentPosition(){
         return [this._currentX, this._currentY];
@@ -53,18 +60,10 @@ class gameTile{
 
         return [x,y];
     }
-      isValid(x,y){
-        // Checks if proposed tile movement is valid 
-        if ((x >= 0 && x <= 500) && (y >= 0 && y <= 500))
-        {
-          return true;
-        }
-        return false;
-      }
 
-      checkAtStart()
+      checkAtWin()
       {
-        if ((this._startingX == this._currentX) && (this._startingY == this._currentY))
+        if (this.winLocations.includes(this.CurrentPosition))
         {
           return true;
         }
@@ -256,7 +255,7 @@ function checkWin()
 {
   for (var tile of Tiles)
   {
-    if (!tile.checkAtStart())
+    if (!tile.checkAtWin())
     {
       return false
     }
@@ -345,7 +344,8 @@ function movement(event){
     let count = 0;
     moveDown(Tiles);
   }
-  //checkWin();
+  checkWin();
+  //console.log(Tiles);
 }
 
 function moveLeft(box){
