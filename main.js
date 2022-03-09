@@ -109,7 +109,7 @@ function spawnTiles(Tiles)
 
 
 function generateTiles(){
-  count = 01;
+  count = 0;
   for (let y = 0; y < 400; y += 100){
     for (let x = 0; x < 400; x += 100){
       Tiles.push(new gameTile(x,y,getRandomColor(), count.toString()));
@@ -367,15 +367,139 @@ function moveRight(box){
 }
 
 function moveUp(box){
-  clearGridTile(box.getCurrentPosition());
-  box.move(box.getCurrentPosition()[0], box.getCurrentPosition()[1]- TILE_SIZE);
-  drawBox(box.getCurrentPosition(), box.getColour());
+  /*  
+    To move up, split the list of tiles into 4 columns
+    After the list is split, goto the last object in the splitted list and check if proposed move would be valid
+    Perform the move and then move backwards in the split list to perfrom moves on other tiles */
+    SplitTiles = [];
+    for (let i = 0; i < 4; i++)
+    {
+      Chunk = [];
+      for (let j = i; j <= i+12; j+=4)
+      {
+        Chunk.push(Tiles[j]);
+      }
+      SplitTiles.push(Chunk);
+      
+    }
+  
+    /*
+      Iterate through the divided lists
+      Starting with the last object, loop till the last possible valid location
+      Once the location has been determined, draw the tile in that spot
+  
+    */
+    storeTiles = []
+    for (split of SplitTiles)
+    {
+      // Store copy of column 
+      var column = [...split];
+      // Reverse columns for convinence
+      //column.reverse();
+  
+      for (let tile = 0; tile < column.length; tile+=1)
+      {
+        var currentCoordinates = [...column[tile].CurrentPosition]; // Copy tile's current postion
+        
+        var proposedCoordinates = [currentCoordinates[0], currentCoordinates[1]]; //Proposed coordinates, which will iterate from there on
+        flag = true;
+        while (flag)
+        { 
+          // Calculate tile coordinates and set to proposed coordinates
+          x = column[tile].directionCalc(proposedCoordinates[0], proposedCoordinates[1], 'up')[0];
+          y = column[tile].directionCalc(proposedCoordinates[0], proposedCoordinates[1], 'up')[1];
+          proposedCoordinates = [x,y];
+  
+          // Check if propsed coordinates fails any of the two conditions
+          // If it does break out of the while loop
+  
+          if (!checkTiles(proposedCoordinates) || !column[tile].isValid(proposedCoordinates[0], proposedCoordinates[1]))
+          {
+            // Tile is in an invalid location, set the coordinates to one previous iteration
+            // Set Tile Location 
+            x = proposedCoordinates[0];
+            y = proposedCoordinates[1] + 100;
+            newCoorinates = [x,y];
+            column[tile].CurrentPosition = newCoorinates;
+            storeTiles.push(column[tile]);
+            flag = false;
+          }
+        }
+      }
+      
+    }
+    Tiles = [...storeTiles];
+    Tiles.sort((a, b) => parseFloat(a._value) - parseFloat(b._value)); // Sort list in ascending order based on it's value
+    clearBoard();
+    spawnTiles(Tiles);
 }
 
 function moveDown(box){
-  clearGridTile(box.getCurrentPosition());
-  box.move(box.getCurrentPosition()[0], box.getCurrentPosition()[1]+ TILE_SIZE);
-  drawBox(box.getCurrentPosition(), box.getColour());
+  /*  
+    To move down, split the list of tiles into 4 columns
+    After the list is split, goto the last object in the splitted list and check if proposed move would be valid
+    Perform the move and then move backwards in the split list to perfrom moves on other tiles */
+    SplitTiles = [];
+    for (let i = 0; i < 4; i++)
+    {
+      Chunk = [];
+      for (let j = i; j <= i+12; j+=4)
+      {
+        Chunk.push(Tiles[j]);
+      }
+      SplitTiles.push(Chunk);
+      
+    }
+  
+    /*
+      Iterate through the divided lists
+      Starting with the last object, loop till the last possible valid location
+      Once the location has been determined, draw the tile in that spot
+  
+    */
+    storeTiles = []
+    for (split of SplitTiles)
+    {
+      // Store copy of column 
+      var column = [...split];
+      // Reverse columns for convinence
+      column.reverse();
+  
+      for (let tile = 0; tile < column.length; tile+=1)
+      {
+        var currentCoordinates = [...column[tile].CurrentPosition]; // Copy tile's current postion
+        
+        var proposedCoordinates = [currentCoordinates[0], currentCoordinates[1]]; //Proposed coordinates, which will iterate from there on
+        flag = true;
+        while (flag)
+        { 
+          // Calculate tile coordinates and set to proposed coordinates
+          x = column[tile].directionCalc(proposedCoordinates[0], proposedCoordinates[1], 'down')[0];
+          y = column[tile].directionCalc(proposedCoordinates[0], proposedCoordinates[1], 'down')[1];
+          proposedCoordinates = [x,y];
+  
+          // Check if propsed coordinates fails any of the two conditions
+          // If it does break out of the while loop
+  
+          if (!checkTiles(proposedCoordinates) || !column[tile].isValid(proposedCoordinates[0], proposedCoordinates[1]))
+          {
+            // Tile is in an invalid location, set the coordinates to one previous iteration
+            // Set Tile Location 
+            x = proposedCoordinates[0];
+            y = proposedCoordinates[1] - 100;
+            newCoorinates = [x,y];
+            column[tile].CurrentPosition = newCoorinates;
+            storeTiles.push(column[tile]);
+            flag = false;
+          }
+        }
+      }
+      
+    }
+    Tiles = [...storeTiles];
+    Tiles.sort((a, b) => parseFloat(a._value) - parseFloat(b._value)); // Sort list in ascending order based on it's value
+    clearBoard();
+    spawnTiles(Tiles);
 }
 
 
