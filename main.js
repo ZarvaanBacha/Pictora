@@ -61,6 +61,15 @@ class gameTile{
         }
         return false;
       }
+
+      checkAtStart()
+      {
+        if ((this._startingX == this._currentX) && (this._startingY == this._currentY))
+        {
+          return true;
+        }
+        return false;
+      }
 }
 
 
@@ -174,6 +183,19 @@ function getRandomColor() {
   return color;
 }
 
+function checkWin()
+{
+  for (var tile of Tiles)
+  {
+    if (!tile.checkAtStart())
+    {
+      return false
+    }
+  }
+  alert("Congratulations, you won!!!!");
+  return true
+}
+
 function arrayEquals(a, b) {
   return Array.isArray(a) &&
     Array.isArray(b) &&
@@ -273,6 +295,7 @@ function movement(event){
       count += 1;
     }
   }
+  checkWin();
 
   //console.log(box1.getCurrentPosition());
 }
