@@ -6,6 +6,7 @@ class gameTile{
     this._startingY = startingY;
     this._colour = colour;
     this._text = text;
+    this._value = text;
 
     // Store the current position of the tile
     this._currentX = startingX;
@@ -44,9 +45,11 @@ class gameTile{
 
           case "left":
             x = x - 100;
+            break;
           
           case "right":
             x = x + 100;
+            break;
         }
 
         return [x,y];
@@ -228,6 +231,71 @@ function movement(event){
 }
 
 function moveLeft(box){
+  /*  
+    To move right, split the list of tiles into 4 rows
+    After the list is split, goto the last object in the splitted list and check if proposed move would be valid
+    Perform the move and then move backwards in the split list to perfrom moves on other tiles */
+    SplitTiles = [];
+    for (let i = 0; i < Tiles.length; i+=4)
+    {
+      Chunk = [];
+      for (let j = i; j < i+4; j++)
+      {
+        Chunk.push(Tiles[j]);
+      }
+      SplitTiles.push(Chunk);
+  
+    }
+  
+    /*
+      Iterate through the divided lists
+      Starting with the last object, loop till the last possible valid location
+      Once the location has been determined, draw the tile in that spot
+  
+    */
+    storeTiles = []
+    for (split of SplitTiles)
+    {
+      // Store copy of row 
+      var row = [...split];
+      // Reverse row for convinence
+      //row.reverse();
+  
+      for (let tile = 0; tile < row.length; tile+=1)
+      {
+        var currentCoordinates = [...row[tile].CurrentPosition]; // Copy tile's current postion
+        
+        var proposedCoordinates = [currentCoordinates[0], currentCoordinates[1]]; //Proposed coordinates, which will iterate from there on
+        flag = true;
+        while (flag)
+        { 
+          // Calculate tile coordinates and set to proposed coordinates
+          x = row[tile].directionCalc(proposedCoordinates[0], proposedCoordinates[1], 'left')[0];
+          y = row[tile].directionCalc(proposedCoordinates[0], proposedCoordinates[1], 'left')[1];
+          proposedCoordinates = [x,y];
+  
+          // Check if propsed coordinates fails any of the two conditions
+          // If it does break out of the while loop
+  
+          if (!checkTiles(proposedCoordinates) || !row[tile].isValid(proposedCoordinates[0], proposedCoordinates[1]))
+          {
+            // Tile is in an invalid location, set the coordinates to one previous iteration
+            // Set Tile Location 
+            x = proposedCoordinates[0] + 100;
+            y = proposedCoordinates[1];
+            newCoorinates = [x,y];
+            row[tile].CurrentPosition = newCoorinates;
+            storeTiles.push(row[tile]);
+            flag = false;
+          }
+        }
+      }
+      
+    }
+    Tiles = [...storeTiles];
+    Tiles.sort((a, b) => parseFloat(a._value) - parseFloat(b._value)); // Sort list in ascending order based on it's value
+    clearBoard();
+    spawnTiles(Tiles);
 }
 
 function moveRight(box){
@@ -292,11 +360,10 @@ function moveRight(box){
     }
     
   }
-  Tiles = [...storeTiles.sort((a,b)=> (a.Text > b.Text ? 1 : -1))];
-  console.log(Tiles);
+  Tiles = [...storeTiles];
+  Tiles.sort((a, b) => parseFloat(a._value) - parseFloat(b._value)); // Sort list in ascending order based on it's value
   clearBoard();
   spawnTiles(Tiles);
-
 }
 
 function moveUp(box){
