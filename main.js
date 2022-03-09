@@ -21,7 +21,6 @@ class gameTile{
       this._currentY = coordinates[1];
       }
 
-    
     get Colour(){
         return this._colour;
       }
@@ -107,6 +106,33 @@ function spawnTiles(Tiles)
   }
 }
 
+function randomizeTiles()
+{
+  tileCopy = [...Tiles]
+  randomizedSet = [];
+  locations = [];
+  for (tile of tileCopy)
+  {
+    flag = true;
+    while (flag)
+    {
+       // Create Random set of coordinates
+       proposedSet = [];
+       proposedSet = [Math.floor(Math.random()*6)*100, Math.floor(Math.random()*6)*100];
+       if (!locations.includes(proposedSet))
+       {
+        tile.CurrentPosition = proposedSet;
+         randomizedSet.push(tile);
+         flag = false;
+       }
+    }
+  }
+  Tiles = [];
+  Tiles = [...randomizedSet];
+  Tiles.sort((a, b) => parseFloat(a._value) - parseFloat(b._value)); // Sort list in ascending order based on it's value
+  clearBoard();
+  spawnTiles(Tiles);
+}
 
 function generateTiles(){
   count = 1;
@@ -210,21 +236,42 @@ function movement(event){
 
   if (keyPressed === LEFT_ARROW){
     // Moving Left
-    moveLeft(Tiles);
+    let count = 0;
+    while (count!=6)
+    {
+      moveLeft(Tiles);
+      count += 1;
+    }
   }
   
   if (keyPressed === RIGHT_ARROW){
-    moveRight(Tiles);
+    // Moving Right
+    let count = 0;
+    while (count!=6)
+    {
+      moveRight(Tiles);
+      count += 1;
+    }
   }
 
   if (keyPressed === UP_KEY){
     // Moving Up
-    moveUp(Tiles);
+    let count = 0;
+    while (count!=6)
+    {
+      moveUp(Tiles);
+      count += 1;
+    }
   }
 
   if (keyPressed === DOWN_KEY){
     //Moving Down
-    moveDown(Tiles);
+    let count = 0;
+    while (count!=6)
+    {
+      moveDown(Tiles);
+      count += 1;
+    }
   }
 
   //console.log(box1.getCurrentPosition());
@@ -510,9 +557,13 @@ function main()
   drawGrid();
   generateTiles();
   spawnTiles(Tiles);
-  console.log(Tiles);
-  //console.log(box1.getCurrentPosition());
-  //drawBox(box1.getCurrentPosition(), box1.getColour());
+  setTimeout(function()
+  {
+    clearBoard();
+    drawGrid();
+    randomizeTiles();
+  }, 2000);
+  
 }
 
 main();
