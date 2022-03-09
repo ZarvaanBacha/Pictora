@@ -109,7 +109,7 @@ function spawnTiles(Tiles)
 
 
 function generateTiles(){
-  count = 0;
+  count = 1;
   for (let y = 0; y < 400; y += 100){
     for (let x = 0; x < 400; x += 100){
       Tiles.push(new gameTile(x,y,getRandomColor(), count.toString()));
