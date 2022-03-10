@@ -10,6 +10,7 @@
 #parentDiv{
   width: 50%;
   margin: 0 auto;
+  padding: 0px;
 
 }
 
@@ -47,11 +48,37 @@
 {
     #parentDiv
     {
-        width: 100%;
+      padding: 0px;  
+      width: 100%;
     }
 
     #gridDiv
     {
       width: 80%;
+    }
+}
+
+@media (min-width:200px) and (max-width:400px) {
+  #parentDiv
+    {
+      width: 100vw;
+      height: 100vh;
+    }
+
+    #gridDiv
+    {
+      width: 80%;
+      height: 50%;
+    }
+
+    #gridCanvas {
+      flex-grow: 1;
+      flex: 1 1 0;
+      min-width: 0;
+      border:1px solid #000;
+      margin-top: 1em;
+      background: #ddd;
+      padding:10px;
+      margin:0 auto;
     }
 }
