@@ -70,15 +70,4 @@
       width: 80%;
       height: 50%;
     }
-
-    #gridCanvas {
-      flex-grow: 1;
-      flex: 1 1 0;
-      min-width: 0;
-      border:1px solid #000;
-      margin-top: 1em;
-      background: #ddd;
-      padding:10px;
-      margin:0 auto;
-    }
 }
