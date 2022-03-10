@@ -1,9 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-   
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <link rel="stylesheet" href="./style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <body>
       <title>Pictora</title>
-      <canvas id="gridCanvas" width="600" height="600" style="padding:1em;margin:0 auto;border:1px solid #000;margin-top:1em;background:#ddd;">  </canvas>
+
+      <div id="parentDiv">
+
+          <div id="gridDiv">
+          <canvas id="gridCanvas" width="600" height="600"></canvas>
+        </div>
+
+        <div id="buttonsDiv">
+          <button id="directionButton" onclick="buttonMoveUp()">↑</button><br><br>
+          <button id="directionButton" onclick="buttonMoveLeft()">←</button>
+          <button id="directionButton" onclick="buttonMoveRight()">→</button><br><br>
+          <button id="directionButton" onclick="buttonMoveDown()">↓</button>
+        </div>
+
+      </div>
+      
+      
     </body>
     <script src="./main.js"></script>
 </html>

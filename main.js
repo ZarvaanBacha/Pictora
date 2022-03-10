@@ -80,6 +80,9 @@ const TILE_SIZE = 100;
 
 
 
+//Canvas Div
+const div = document.getElementById("gridDiv");
+
 // Canvas Elements
 const BOARD = document.getElementById("gridCanvas");
 const BOARD_CONTEXT = BOARD.getContext("2d");
@@ -96,7 +99,7 @@ function drawBox(boxCoordinates, colour, text){
   BOARD_CONTEXT.fillStyle = colour;
   BOARD_CONTEXT.fillRect(boxCoordinates[0], boxCoordinates[1], TILE_SIZE, TILE_SIZE);
 
-  BOARD_CONTEXT.font = "15px Arial";
+  BOARD_CONTEXT.font = "bold 30px Arial";
   BOARD_CONTEXT.fillStyle = "black";
   BOARD_CONTEXT.textAllign = "center";
   BOARD_CONTEXT.fillText(text, boxCoordinates[0] + 50, boxCoordinates[1] + 50);
@@ -349,6 +352,26 @@ function movement(event){
   }
   checkWin();
   //console.log(Tiles);
+}
+
+function buttonMoveUp()
+{
+  moveUp(Tiles);
+}
+
+function buttonMoveDown()
+{
+  moveDown(Tiles);
+}
+
+function buttonMoveLeft()
+{
+  moveLeft(Tiles);
+}
+
+function buttonMoveRight()
+{
+  moveRight(Tiles);
 }
 
 function moveLeft(box){

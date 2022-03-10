@@ -6,3 +6,52 @@
   color: #2c3e50;
   margin-top: 60px;
 }
+
+#parentDiv{
+  width: 50%;
+  margin: 0 auto;
+
+}
+
+#gridDiv{
+  width: 80%;
+  display: flex;
+  margin: 0 auto;
+}
+
+#gridCanvas {
+  flex-grow: 1;
+  flex: 1 1 0;
+  min-width: 0;
+  border:1px solid #000;
+  margin-top: 1em;
+  background: #ddd;
+  padding:10px;
+  margin:0 auto;
+}
+
+#directionButton{
+  font-size: large;
+  margin-left: 2%;
+  margin-right: 2%;
+  margin-top: 0%;
+  margin-bottom: 0;
+
+}
+
+#buttonsDiv {
+  text-align: center;
+}
+
+@media only screen and (max-width: 600px)
+{
+    #parentDiv
+    {
+        width: 100%;
+    }
+
+    #gridDiv
+    {
+      width: 80%;
+    }
+}
