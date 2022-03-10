@@ -12,18 +12,28 @@ class gameTile{
     this._currentX = startingX;
     this._currentY = startingY;
 
+    //Store the previous location for animation
+    this._previousX = null;
+    this._previousY = null;
+
     var topLeftWin = [this._startingX, this._startingY];
     var topRightWin = [this._startingX + 200, this._startingY];
     var bottomLeftWin = [this._startingX, this._startingY + 200];
     var bottomRightWin = [this._startingX + 200, this._startingX + 200];
 
-    var winLocations = [topLeftWin, topRightWin, bottomLeftWin, bottomRightWin];
+    this._winLocations = [topLeftWin, topRightWin, bottomLeftWin, bottomRightWin];
+
   }
     get CurrentPosition(){
         return [this._currentX, this._currentY];
       }
     
     set CurrentPosition(coordinates){
+      // Set the previous coordinates to the current coordinates before the update
+      this._previousX = this._currentX;
+      this._previousY = this._currentY;
+
+      // Set the current coordinates to the new set
       this._currentX = coordinates[0];
       this._currentY = coordinates[1];
       }
@@ -34,6 +44,11 @@ class gameTile{
     
     get Text(){
       return this._text;
+    }
+
+    get previousCoordinates()
+    {
+      return [this._previousX, this._previousY];
     }
 
     
@@ -63,7 +78,7 @@ class gameTile{
 
       checkAtWin()
       {
-        if (this.winLocations.includes(this.CurrentPosition))
+        if (this._winLocations.includes(this.CurrentPosition))
         {
           return true;
         }
@@ -122,6 +137,65 @@ function spawnTiles(Tiles)
       
     }
     
+  }
+}
+
+function moveTiles(Tiles)
+{
+  for (let row of Tiles)
+  {
+    for (let tile of row)
+    {
+      if (tile instanceof gameTile)
+      {
+        // Animate tile
+        animateMovement(tile);
+      }
+    }
+  }
+}
+
+function animateMovement (Tile)
+{
+  let size = TILE_SIZE;
+  let size_grow = 0;
+  let adder = 0;
+  var clear = setInterval(shrinkPrev, 1)
+  var grow = setInterval(growNext, 1);
+  console.log("Here");
+  
+  function shrinkPrev()
+  {
+    if (size == -10)
+    {
+      drawBox(Tile.previousCoordinates, "white", "");
+      clearInterval(clear);
+    }
+    else 
+    {
+      // Clear Rectangle in space 
+      BOARD_CONTEXT.clearRect(Tile.previousCoordinates[0], Tile.previousCoordinates[1], TILE_SIZE, TILE_SIZE);
+
+      // Draw Rectangle
+      BOARD_CONTEXT.fillStyle = Tile.Colour;
+      BOARD_CONTEXT.fillRect(Tile.previousCoordinates[0] + adder, Tile.previousCoordinates[1] + adder, size, size)
+      size = size - 10;
+      adder += 5;
+    }
+  }
+  function growNext()
+  {
+    if (size_grow != TILE_SIZE + 10)
+    {
+      drawBox(Tile.CurrentPosition, Tile.Colour, Tile.Text);
+    }
+    else 
+    {
+      // Draw Rectangle
+      BOARD_CONTEXT.fillStyle = Tile.Colour;
+      BOARD_CONTEXT.fillRect(Tile.CurrentPosition[0], Tile.CurrentPosition[1], size_grow, size_grow)
+      size_grow += 10;
+    }
   }
 }
 
@@ -260,9 +334,12 @@ function checkWin()
   {
     for (var tile of row)
     {
-      if (!tile.checkAtWin())
+      if (tile instanceof gameTile)
       {
-        return false
+        if (!tile.checkAtWin())
+        {
+          return false;
+        }
       }
     }
   }
@@ -417,6 +494,7 @@ function moveLeft(box){
   }
   logGrid(Tiles);
   clearBoard();
+  //moveTiles(Tiles);
   spawnTiles(Tiles);
   
 }
@@ -463,6 +541,7 @@ function moveRight(box){
   }
   logGrid(Tiles);
   clearBoard();
+  //moveTiles(Tiles);
   spawnTiles(Tiles);
 
 }
@@ -509,6 +588,7 @@ function moveUp(box){
   }
   logGrid(Tiles);
   clearBoard();
+  //moveTiles(Tiles);
   spawnTiles(Tiles);
   
   
@@ -557,6 +637,7 @@ function moveDown(box){
   logGrid(Tiles);
   clearBoard();
   spawnTiles(Tiles);
+  //moveTiles(Tiles);
   
 }
 
@@ -568,6 +649,7 @@ function main()
   drawGrid();
   generateTiles();
   spawnTiles(Tiles);
+  
   setTimeout(function()
   {
     clearBoard();
