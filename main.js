@@ -140,65 +140,6 @@ function spawnTiles(Tiles)
   }
 }
 
-function moveTiles(Tiles)
-{
-  for (let row of Tiles)
-  {
-    for (let tile of row)
-    {
-      if (tile instanceof gameTile)
-      {
-        // Animate tile
-        animateMovement(tile);
-      }
-    }
-  }
-}
-
-function animateMovement (Tile)
-{
-  let size = TILE_SIZE;
-  let size_grow = 0;
-  let adder = 0;
-  var clear = setInterval(shrinkPrev, 1)
-  var grow = setInterval(growNext, 1);
-  console.log("Here");
-  
-  function shrinkPrev()
-  {
-    if (size == -10)
-    {
-      drawBox(Tile.previousCoordinates, "white", "");
-      clearInterval(clear);
-    }
-    else 
-    {
-      // Clear Rectangle in space 
-      BOARD_CONTEXT.clearRect(Tile.previousCoordinates[0], Tile.previousCoordinates[1], TILE_SIZE, TILE_SIZE);
-
-      // Draw Rectangle
-      BOARD_CONTEXT.fillStyle = Tile.Colour;
-      BOARD_CONTEXT.fillRect(Tile.previousCoordinates[0] + adder, Tile.previousCoordinates[1] + adder, size, size)
-      size = size - 10;
-      adder += 5;
-    }
-  }
-  function growNext()
-  {
-    if (size_grow != TILE_SIZE + 10)
-    {
-      drawBox(Tile.CurrentPosition, Tile.Colour, Tile.Text);
-    }
-    else 
-    {
-      // Draw Rectangle
-      BOARD_CONTEXT.fillStyle = Tile.Colour;
-      BOARD_CONTEXT.fillRect(Tile.CurrentPosition[0], Tile.CurrentPosition[1], size_grow, size_grow)
-      size_grow += 10;
-    }
-  }
-}
-
 function randomizeTiles()
 {
   var tileCopy = [
@@ -316,16 +257,10 @@ function checkTiles(coordinates)
 }
 
 function getRandomColor() {
-  var letters = '0123456789ABCDEF';
-  var color = '#';
-  for (var i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  if (!colours.includes(color))
-  {
-    colours.push(color);
-  }
-  return color;
+  var validColours = ["#d7ade1", "#24e7e0", "#fd7863", "#8e67fe", "#d9622f", "#1b8e86", "#a37f2f", "#d896ce", 
+  "#04cf0a", "#3dd76f", "#f49891", "#eac458", "#bbbedc", "#9a5e51", "#6cc212", "#2ac422"];
+  
+  return validColours[Math.floor(Math.random()*validColours.length)];
 }
 
 function checkWin()
@@ -482,6 +417,10 @@ function moveLeft(box){
           rowCopy.splice(i, 1, 'B');
           row = [...rowCopy];
         }
+        else 
+        {
+          row[i].CurrentPosition = row[i].CurrentPosition;
+        }
       }
       //console.log(i, 'Loop', rowCopy);
     }
@@ -494,7 +433,6 @@ function moveLeft(box){
   }
   logGrid(Tiles);
   clearBoard();
-  //moveTiles(Tiles);
   spawnTiles(Tiles);
   
 }
@@ -530,6 +468,10 @@ function moveRight(box){
           rowCopy.splice(i, 1, 'B');
           row = [...rowCopy];
         }
+        else 
+        {
+          row[i].CurrentPosition = row[i].CurrentPosition;
+        }
       }
       //console.log(i, 'Loop', rowCopy);
     }
@@ -541,7 +483,6 @@ function moveRight(box){
   }
   logGrid(Tiles);
   clearBoard();
-  //moveTiles(Tiles);
   spawnTiles(Tiles);
 
 }
@@ -576,6 +517,10 @@ function moveUp(box){
           rowCopy.splice(i-1, 1, row[i]);
           rowCopy.splice(i, 1, 'B');
           row = [...rowCopy];
+        } 
+        else 
+        {
+          row[i].CurrentPosition = row[i].CurrentPosition;
         }
       }
       //console.log(i, 'Loop', rowCopy);
@@ -588,7 +533,6 @@ function moveUp(box){
   }
   logGrid(Tiles);
   clearBoard();
-  //moveTiles(Tiles);
   spawnTiles(Tiles);
   
   
@@ -625,6 +569,10 @@ function moveDown(box){
           rowCopy.splice(i, 1, 'B');
           row = [...rowCopy];
         }
+        else 
+        {
+          row[i].CurrentPosition = row[i].CurrentPosition;
+        }
       }
       //console.log(i, 'Loop', rowCopy);
     }
@@ -637,7 +585,6 @@ function moveDown(box){
   logGrid(Tiles);
   clearBoard();
   spawnTiles(Tiles);
-  //moveTiles(Tiles);
   
 }
 
@@ -649,6 +596,7 @@ function main()
   drawGrid();
   generateTiles();
   spawnTiles(Tiles);
+  
   
   setTimeout(function()
   {

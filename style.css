@@ -31,16 +31,35 @@
   margin:0 auto;
 }
 
-#directionButton{
-  font-size: large;
+.directionButton {
+	background-color: #928f8f;
+  border: 2px solid #928f8f;
+	border-radius:20px;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:17px;
+	font-weight:bold;
+	padding:10px 40px;
+	text-decoration:none;
+
   margin-left: 2%;
   margin-right: 2%;
   margin-top: 0%;
   margin-bottom: 0;
-
+}
+.directionButton:hover {
+	background-color:#708585;
+}
+.directionButton:active {
+	position:relative;
+	top:1px;
 }
 
+
 #buttonsDiv {
+  padding: 2px;
   text-align: center;
 }
 
@@ -48,13 +67,14 @@
 {
     #parentDiv
     {
-      padding: 0px;  
-      width: 100%;
+      width: 100vw;
+      height: 100vh;
     }
 
     #gridDiv
     {
       width: 80%;
+      height: 50%;
     }
 }
 
@@ -67,7 +87,8 @@
 
     #gridDiv
     {
-      width: 80%;
+      width: 95%;
       height: 50%;
     }
+
 }
