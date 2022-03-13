@@ -578,15 +578,7 @@ function moveDown(box){
         {
           row[i].CurrentPosition = row[i].CurrentPosition;
         }
-        // Loop Around
-        if (i == 0 && !(row[row.length - 1] instanceof gameTile))
-        {
-          row[i].CurrentPosition = [row[i].CurrentPosition[0], 0]
-          rowCopy.splice(row.length - 1, 1, row[i]);
-          rowCopy.splice(i, 1, 'B');
-          row = [...rowCopy];
-          break;
-        }
+        // insert
       }
       //console.log(i, 'Loop', rowCopy);
     }
