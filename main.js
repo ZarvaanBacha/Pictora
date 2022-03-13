@@ -17,9 +17,9 @@ class gameTile{
     this._previousY = null;
 
     var topLeftWin = [this._startingX, this._startingY];
-    var topRightWin = [this._startingX + 200, this._startingY];
-    var bottomLeftWin = [this._startingX, this._startingY + 200];
-    var bottomRightWin = [this._startingX + 200, this._startingX + 200];
+    var topRightWin = [this._startingX + 100, this._startingY];
+    var bottomLeftWin = [this._startingX, this._startingY + 100];
+    var bottomRightWin = [this._startingX + 100, this._startingX + 100];
 
     this._winLocations = [topLeftWin, topRightWin, bottomLeftWin, bottomRightWin];
 
@@ -107,8 +107,10 @@ var Tiles = [];
 let changing_direction = false;
 
 // List to store colours
-var colours = []
-//let box1 = new gameTile(0, 0, 'lightblue'); //Test Box
+var coloursIndex = 0;
+
+// Store player moves
+var moves = 0;
 
 function drawBox(boxCoordinates, colour, text){
   BOARD_CONTEXT.fillStyle = colour;
@@ -143,12 +145,10 @@ function spawnTiles(Tiles)
 function randomizeTiles()
 {
   var tileCopy = [
-    ['B','B','B','B','B','B'],
-    ['B','B','B','B','B','B'],
-    ['B','B','B','B','B','B'],
-    ['B','B','B','B','B','B'],
-    ['B','B','B','B','B','B'],
-    ['B','B','B','B','B','B']
+    ['B','B','B','B'],
+    ['B','B','B','B'],
+    ['B','B','B','B'],
+    ['B','B','B','B']
   ];
   var locations = [];
   for (var row of Tiles)
@@ -160,7 +160,7 @@ function randomizeTiles()
       {
         // Create Random set of coordinates
         var proposedSet = [];
-        proposedSet = [Math.floor(Math.random()*6)*100, Math.floor(Math.random()*6)*100];
+        proposedSet = [Math.floor(Math.random()*4)*100, Math.floor(Math.random()*4)*100];
         if (!(locations.includes(proposedSet)) && !(tileCopy[proposedSet[1]/100][proposedSet[0]/100] instanceof gameTile))
         {
             tile.CurrentPosition = proposedSet;
@@ -182,20 +182,19 @@ function randomizeTiles()
 
 function generateTiles(){
   var count = 1;
-  for (let y = 0; y < 400; y += 100){
+  for (let y = 0; y < 300; y += 100){
     const row = [];
-    for (let x = 0; x < 400; x += 100){
-      row.push(new gameTile(x,y,getRandomColor(), count.toString()));
+    for (let x = 0; x < 300; x += 100){
+      row.push(new gameTile(x,y,getColor(), count.toString()));
       count += 1;
     }
-    row.push("B"); // Adding two blanks per row
-    row.push("B");
+    row.push("B"); // Adding one blanks per row
     Tiles.push(row);
   }
   for (let x = 0; x < 2; x++)
   {
     row = []
-    for (let y = 0; y < 6; y++)
+    for (let y = 0; y < 2; y++)
     {
       row.push("B");
     }
@@ -256,14 +255,15 @@ function checkTiles(coordinates)
   return true;
 }
 
-function getRandomColor() {
+function getColor() {
   var validColours = ["#d7ade1", "#24e7e0", "#fd7863", "#8e67fe", "#d9622f", "#1b8e86", "#a37f2f", "#d896ce", 
   "#04cf0a", "#3dd76f", "#f49891", "#eac458", "#bbbedc", "#9a5e51", "#6cc212", "#2ac422"];
-  
-  return validColours[Math.floor(Math.random()*validColours.length)];
+
+  coloursIndex += 1;
+  return validColours[coloursIndex-1];
 }
 
-function checkWin()
+function checkWin(Tiles)
 {
   for (var row of Tiles)
   {
@@ -278,7 +278,8 @@ function checkWin()
       }
     }
   }
-  alert("Congratulations, you won!!!!");
+  alert("Congratulations, you beat the game in " + moves + " moves");
+  newGame();
   return true
 }
 
@@ -308,25 +309,25 @@ function clearBoard(){
 function drawGrid()
 {
   // Draw Vertical Lines
-  for (let x = 0; x < 600; x+=100)
+  for (let x = 0; x < 400; x+=100)
   {
-    for (let y = 0; y < 600; y+=100)
+    for (let y = 0; y < 400; y+=100)
     {
       BOARD_CONTEXT.beginPath();
       BOARD_CONTEXT.moveTo(x,y);
-      BOARD_CONTEXT.lineTo(x,600);
+      BOARD_CONTEXT.lineTo(x,400);
       BOARD_CONTEXT.stroke();
     }
   }
 
   // Draw Horizontal Lines
-  for (let y = 0; y < 600; y+=100)
+  for (let y = 0; y < 400; y+=100)
   {
-    for (let x = 0; x < 600; x+=100)
+    for (let x = 0; x < 400; x+=100)
     {
       BOARD_CONTEXT.beginPath();
       BOARD_CONTEXT.moveTo(x,y);
-      BOARD_CONTEXT.lineTo(600,y);
+      BOARD_CONTEXT.lineTo(400,y);
       BOARD_CONTEXT.stroke();
     }
   }
@@ -362,8 +363,10 @@ function movement(event){
     let count = 0;
     moveDown(Tiles);
   }
-  checkWin();
-  //console.log(Tiles);
+  checkWin(Tiles);
+  saveTileSpot();
+  moves = moves+= 1;
+  console.log("Move" , moves);
 }
 
 function buttonMoveUp()
@@ -399,7 +402,8 @@ function moveLeft(box){
   {
     //row.reverse();
     rowCopy = [...row];
-    console.log(row);
+    //
+    //console.log(row);
     for (let i = 0; i < row.length; i++)
     {
       //console.log('Iteration', i, row[i]);
@@ -407,7 +411,7 @@ function moveLeft(box){
       if (row[i] instanceof gameTile)
       {
         // Check if value before is free to move to
-        console.log('Prev', row[i-1]);
+        //console.log('Prev', row[i-1]);
         if (!(row[i-1] instanceof gameTile) && !(row[i-1] === undefined))
         {
           // Swap Postions
@@ -450,7 +454,7 @@ function moveRight(box){
   {
     row.reverse();
     rowCopy = [...row];
-    console.log(row);
+    //console.log(row);
     for (let i = 0; i < row.length; i++)
     {
       //console.log('Iteration', i, row[i]);
@@ -458,7 +462,7 @@ function moveRight(box){
       if (row[i] instanceof gameTile)
       {
         // Check if value before is free to move to
-        console.log('Prev', row[i-1]);
+        //console.log('Prev', row[i-1]);
         if (!(row[i-1] instanceof gameTile) && !(row[i-1] === undefined))
         {
           // Swap Postions
@@ -508,7 +512,7 @@ function moveUp(box){
       if (row[i] instanceof gameTile)
       {
         // Check if value before is free to move to
-        console.log('Prev', row[i-1]);
+        //console.log('Prev', row[i-1]);
         if (!(row[i-1] instanceof gameTile) && !(row[i-1] === undefined))
         {
           // Swap Postions
@@ -523,6 +527,7 @@ function moveUp(box){
           row[i].CurrentPosition = row[i].CurrentPosition;
         }
       }
+      
       //console.log(i, 'Loop', rowCopy);
     }
     arranged.push(rowCopy);
@@ -551,7 +556,7 @@ function moveDown(box){
   {
     row.reverse();
     rowCopy = [...row];
-    console.log(row);
+    //console.log(row);
     for (let i = 0; i < row.length; i++)
     {
       //console.log('Iteration', i, row[i]);
@@ -559,7 +564,7 @@ function moveDown(box){
       if (row[i] instanceof gameTile)
       {
         // Check if value before is free to move to
-        console.log('Prev', row[i-1]);
+        //console.log('Prev', row[i-1]);
         if (!(row[i-1] instanceof gameTile) && !(row[i-1] === undefined))
         {
           // Swap Postions
@@ -572,6 +577,15 @@ function moveDown(box){
         else 
         {
           row[i].CurrentPosition = row[i].CurrentPosition;
+        }
+        // Loop Around
+        if (i == 0 && !(row[row.length - 1] instanceof gameTile))
+        {
+          row[i].CurrentPosition = [row[i].CurrentPosition[0], 0]
+          rowCopy.splice(row.length - 1, 1, row[i]);
+          rowCopy.splice(i, 1, 'B');
+          row = [...rowCopy];
+          break;
         }
       }
       //console.log(i, 'Loop', rowCopy);
@@ -588,23 +602,100 @@ function moveDown(box){
   
 }
 
-
-
-function main()
+function buildTile(data)
 {
+  tile = new gameTile(data._startingX, data._startingY, data._colour, data._text);
+  console.log(tile);
+
+  tile.CurrentPosition = [data._currentX, data._currentY]
+  tile._previousX = data._previousX;
+  tile._previousY = data._previousY;
+
+  tile._text = data._text;
+
+  tile._colour = data._colour;
+  console.log(tile._winLocations);
+  return tile;
+}
+// Storing user progress and other data
+function saveTileSpot()
+{
+  localStorage.setItem("tileLocations", JSON.stringify(Tiles));
+  localStorage.setItem("moves", moves);
+}
+
+function restoreTileSpot()
+{
+  moves = parseInt(localStorage.getItem("moves"));
+  l = JSON.parse(localStorage.getItem("tileLocations"));
+  console.log(l);
+  config = []
+  for (row of l)
+  {
+    rowBuild = []
+    for (tile of row)
+    {
+      if (tile != "B")
+      {
+        rowBuild.push(buildTile(tile));
+      }
+      else 
+      {
+        rowBuild.push("B");
+      }
+    }
+    config.push(rowBuild);
+  }
+  logGrid(config);
+
+  Tiles = [...config];
+  clearBoard();
+  drawGrid();
+  spawnTiles(Tiles); 
+}
+
+function newGame()
+{
+  Tiles = [];
+  coloursIndex = 0;
+  moves = 0;
   clearBoard();
   drawGrid();
   generateTiles();
   spawnTiles(Tiles);
-  
-  
   setTimeout(function()
+    {
+      clearBoard();
+      drawGrid();
+      randomizeTiles();
+    }, 2000); 
+  saveTileSpot();
+}
+
+
+
+
+function main()
+{
+  if (localStorage.getItem("tileLocations") === null)
   {
+    // New Player
     clearBoard();
     drawGrid();
-    randomizeTiles();
-  }, 2000); 
-  
+    generateTiles();
+    spawnTiles(Tiles);
+
+    setTimeout(function()
+    {
+      clearBoard();
+      drawGrid();
+      randomizeTiles();
+    }, 2000); 
+  }
+  else 
+  {
+    restoreTileSpot();
+  }
 }
 
 main();
